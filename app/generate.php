@@ -1,6 +1,6 @@
 <?php
 class Random_value_generator {
-    function __construct($type = "string", $len = 40, $from_values = "")
+    function __construct($type, $len, $from_values)
     {
         $this->type = $type;
         $this->from_values = $from_values;
@@ -8,7 +8,7 @@ class Random_value_generator {
         $this->types = ["string" => 1, "number" => 1, "GUID" => 1, "from" => 1];
         $this->minlen = 10;
         $this->maxlen = 100;
-        $this->min_len_from = 4;
+        $this->min_len_from = 5;
         $this->check();
     }
 
@@ -55,10 +55,8 @@ class Random_value_generator {
         if ($this->type === "from") {
             $was = "";
             for ($i = 0; $i < strlen($this->from_values); $i++) {
-                print_r($was);
-                print_r($this->from_values[$i] . PHP_EOL);
                 if (strpos($was, $this->from_values[$i]) !== FALSE) {
-                    throw new Exception('я еще не придумал название для исключения');
+                    throw new Exception('duplicate_symbols');
                     return FALSE;
                 }
                 $was = $was . $this->from_values[$i];
@@ -101,5 +99,3 @@ class Random_value_generator {
         return ($num);
     }
 }
-$v = new Random_value_generator($type = "from", $len = 40, $from_values = "1234аьф");
-print_r($v->get_value());

@@ -1,15 +1,8 @@
 <?php
-include_once 'Request.php';
-include_once 'Router.php';
-$router = new Router(new Request);
-$router->get('/', function() {
-  return ;
-});
-$router->get('/profile', function($request) {
-  return <<<HTML
-  <h1>Profile</h1>
-HTML;
-});
-$router->post('/data', function($request) {
-  return json_encode($request->getBody());
-});
+include_once("Handlers.php");
+include_once("Router.php");
+
+$app = new Router;
+$app->route("POST", "/api/generate/", "generate_value");///api/retrieve/
+$app->route("GET", "/api/retrieve/", "get_value");
+$app->run();

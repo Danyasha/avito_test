@@ -1,62 +1,37 @@
 <?php
-class Router
-{
-  private $request;
-  private $supportedHttpMethods = array(
-    "GET",
-    "POST"
-  );
-  function __construct(IRequest $request)
-  {
-   $this->request = $request;
-  }
-  function __call($name, $args)
-  {
-    list($route, $method) = $args;
-    if(!in_array(strtoupper($name), $this->supportedHttpMethods))
-    {
-      $this->invalidMethodHandler();
+class Router {
+    function __construct() {
+        $this->routers_get = [];
+        $this->routers_post = [];
     }
-    $this->{strtolower($name)}[$this->formatRoute($route)] = $method;
-  }
-  /**
-   * Removes trailing forward slashes from the right of the route.
-   * @param route (string)
-   */
-  private function formatRoute($route)
-  {
-    $result = rtrim($route, '/');
-    if ($result === '')
-    {
-      return '/';
+    public function run() {
+        if (isset($_SERVER["REQUEST_URI"])) {
+            $url = $_SERVER["REQUEST_URI"];
+            if (preg_match("/\?/", $url)) {
+                $url = preg_split("/\?/", $url)[0];
+            }
+            if (isset($this->routers_post[$url])) {
+                $f = $this->routers_post[$url];
+                $f();
+                return ;
+            } 
+            elseif (isset($this->routers_get[$url])) {
+                $f = $this->routers_get[$url];
+                $f();
+                return ;
+            }
+            http_response_code(404);
+            header('Content-Type: application/json');
+        }
+        else {
+            http_response_code(400);
+            header('Content-Type: application/json');
+        }
     }
-    return $result;
-  }
-  private function invalidMethodHandler()
-  {
-    header("{$this->request->serverProtocol} 405 Method Not Allowed");
-  }
-  private function defaultRequestHandler()
-  {
-    header("{$this->request->serverProtocol} 404 Not Found");
-  }
-  /**
-   * Resolves a route
-   */
-  function resolve()
-  {
-    $methodDictionary = $this->{strtolower($this->request->requestMethod)};
-    $formatedRoute = $this->formatRoute($this->request->requestUri);
-    $method = $methodDictionary[$formatedRoute];
-    if(is_null($method))
-    {
-      $this->defaultRequestHandler();
-      return;
+    public function route($type, $url, $action) {
+        if ($type == "POST")
+            $this->routers_post += [$url => $action];
+        if ($type == "GET")
+            $this->routers_get += [$url => $action];
     }
-    echo call_user_func_array($method, array($this->request));
-  }
-  function __destruct()
-  {
-    $this->resolve();
-  }
 }
