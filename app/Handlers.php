@@ -33,7 +33,7 @@ function generate_value() {
     $type = "string";
     $from_values = "";
     if (isset($_POST["len"]) && is_numeric($_POST["len"])) {
-        $len = inval($_POST["len"]);
+        $len = intval($_POST["len"]);
     }
     if (isset($_POST["type"])) {
         $type = $_POST["type"];
