@@ -1,7 +1,7 @@
 <?php
 
 class Fabric_random {
-    function __construct($type, $len, $from_values = NULL) {
+    function get_Random($type, $len, $from_values = NULL) {
         $types = ["string" => 1, "numeric" => 1, "GUID" => 1, "from" => 1];
         $this->check($type, $types);
         if ($type == "string") {

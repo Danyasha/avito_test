@@ -1,5 +1,5 @@
 <?php
-include_once 'Generate.php';
+include_once 'Generate_v_2.php';
 include_once 'Db_controller.php';
 
 function get_value() {
@@ -42,7 +42,8 @@ function generate_value() {
         $from_values = $_POST["from_values"];
     }
     try {
-        $r = new Random_value_generator($type, $len, $from_values);
+        $r = new Fabric_random();
+        $r = $r->get_Random($type, $len, $from_values);
         $value = $r->get_value();
         $users = new Users("users.json");
         while ($users->is_key_exists($value)) {
