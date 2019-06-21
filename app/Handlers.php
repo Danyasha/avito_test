@@ -21,7 +21,6 @@ function get_value() {
         write_error_response(400, "Invalid id");
         return ;
     }
-
 }
 
 function generate_value() {

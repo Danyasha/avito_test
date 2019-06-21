@@ -1,9 +1,13 @@
 <?php
 
 class Fabric_random {
+    // function __construct($type, $len, $from_values = NULL) {
+    //     $types = ["string" => 1, "numeric" => 1, "GUID" => 1, "from" => 1];
+    //     $this->check($type,$types);
+    // }
     function get_Random($type, $len, $from_values = NULL) {
         $types = ["string" => 1, "numeric" => 1, "GUID" => 1, "from" => 1];
-        $this->check($type, $types);
+        $this->check($type,$types);
         if ($type == "string") {
             return New Random_string_generator($len);
         }
@@ -36,14 +40,15 @@ abstract class Random_value_generator {
         $this->minlen = 10;
         $this->maxlen = 100;
         $this->min_len_from = 5;
+        $this->check($len);
     }
     abstract public function get_value();
-    protected function check() {
-        if ($this->len < 10) {
+    protected function check($len) {
+        if ($len < 10) {
             throw new Exception('Small_len');
             return FALSE;
             }
-        if ($this->len > 100) {
+        if ($len > 100) {
             throw new Exception('Big_len');
             return FALSE;
             }
@@ -52,7 +57,6 @@ abstract class Random_value_generator {
 class Random_string_generator extends Random_value_generator {
     function __construct($len) {
         parent::__construct("string", $len, NULL);
-        parent::check();
         $fd = fopen("/dev/urandom", "r");
         $this->random_bytes = "";
         while ($this->len > strlen($this->random_bytes)) {
@@ -67,9 +71,8 @@ class Random_string_generator extends Random_value_generator {
 }
 
 class Random_numberic_generator extends Random_string_generator {
-    function __construct( $len) {
-        parent::__construct("numeric", $len, NULL);
-        parent::check();
+    function __construct($len) {
+        parent::__construct($len);
     }
     private function to_number($s) {
         $num = "";
@@ -82,15 +85,14 @@ class Random_numberic_generator extends Random_string_generator {
         return ($num);
     }
     public function get_value() {
-        return(to_number($this->random_bytes));
+        return($this->to_number($this->random_bytes));
     }
 }
 
 class From_values_generator extends Random_value_generator {
     function __construct($len, $from_values) {
         parent::__construct("from", $len, $from_values);
-        parent::check();
-        $this->check();
+        $this->check_from_values();
     }
     public function get_value() {
         $value = "";
@@ -99,7 +101,7 @@ class From_values_generator extends Random_value_generator {
         }
         return $value;
     }
-    protected function check() {
+    protected function check_from_values() {
         if ($this->from_values == "" || $this->from_values == NULL) {
             throw new Exception('from_values not defined');
             return FALSE;
@@ -122,7 +124,6 @@ class From_values_generator extends Random_value_generator {
 class Random_guid_generator extends Random_value_generator {
     function __construct($len) {
         parent::__construc("GUID", $len, NULL);
-        parent::check();
     }
     public function get_value() { //https://www.php.net/manual/ru/function.com-create-guid.php 
         if (function_exists('com_create_guid') === true) {
