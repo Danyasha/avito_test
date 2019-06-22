@@ -53,10 +53,37 @@ answer = get_data(address+generate, headers)
 if answer.get("message") != "duplicate_symbols":
     is_pass = False
     print("Duplicate symbols")
-from_values = "!2223asad"
+from_values = "hey12345"
 headers = {"type":"from", "from_values":from_values}
 answer = get_data(address+generate, headers)
 from_values = set(from_values)
+for i in answer.get("value"):
+    if not from_values.intersection(i):
+        is_pass = False
+        print("From_values add values that not in from_values")
+headers = {"type":"from", "from_values":"k"}
+answer = get_data(address+generate, headers)
+if answer.get("message") != "Small_from":
+    is_pass = False
+    print(answer.get("Small_from"))
+if is_pass:
+    print("from_values tests passed")
+else:
+    print("from_values tests failed")
+#end of from test
+
+#error tests
+
+is_pass = True
+
+headers = {"type":"aloha"}
+answer = get_data(address+generate, headers)
+if answer.get("message") != "Unsupported type":
+    is_pass = False;
+    print("type checker doesnt work")
+#end tests
+
+
 # if answer.difference(from_values):
 #     is_pass = False
 #     print("Duplicate symbols")

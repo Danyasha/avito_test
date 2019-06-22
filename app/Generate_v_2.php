@@ -1,24 +1,20 @@
 <?php
 
-class Fabric_random {
-    // function __construct($type, $len, $from_values = NULL) {
-    //     $types = ["string" => 1, "numeric" => 1, "GUID" => 1, "from" => 1];
-    //     $this->check($type,$types);
-    // }
+class Random_generator_switcher {
     function get_Random($type, $len, $from_values = NULL) {
         $types = ["string" => 1, "numeric" => 1, "GUID" => 1, "from" => 1];
         $this->check($type,$types);
-        if ($type == "string") {
+        if ($type === "string") {
             return New Random_string_generator($len);
         }
-        if ($type == "GUID") {
+        if ($type === "GUID") {
             return new Guid_generator($len);
         }
-        if ($type == "numeric") {
-            return New Random_numberic_generator($len);
+        if ($type === "numeric") {
+            return New Random_numeric_generator($len);
         }
-        if ($type == "from") {
-            return New Random_guid_generator($len, $from_values);
+        if ($type === "from") {
+            return New From_values_generator($len, $from_values);
         }
     }
     private function check($type, $types) {
@@ -70,7 +66,7 @@ class Random_string_generator extends Random_value_generator {
     }
 }
 
-class Random_numberic_generator extends Random_string_generator {
+class Random_numeric_generator extends Random_string_generator {
     function __construct($len) {
         parent::__construct($len);
     }

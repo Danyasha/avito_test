@@ -2,6 +2,10 @@
 
 class Users {
     function __construct($name) {
+        if (!file_exists($name)) {
+            $f = fopen($name, 'w');
+            fclose($f);
+        }
         $this->name = $name;
         $this->content = file_get_contents($name);
         $this->content = json_decode($this->content);

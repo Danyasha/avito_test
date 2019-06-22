@@ -41,7 +41,7 @@ function generate_value() {
         $from_values = $_POST["from_values"];
     }
     try {
-        $r = new Fabric_random();
+        $r = new Random_generator_switcher();
         $r = $r->get_Random($type, $len, $from_values);
         $value = $r->get_value();
         $users = new Users("users.json");
